@@ -21,4 +21,9 @@ public class MessageBundle {
     public static String getMessage(String code, Object[] args) {
         return messageSource.getMessage(code, null, LocaleContextHolder.getLocale());
     }
+
+
+    public static String getMessageByCode(String code) {
+        return messageSource.getMessage(code, null, LocaleContextHolder.getLocale());
+    }
 }

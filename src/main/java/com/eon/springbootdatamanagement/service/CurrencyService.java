@@ -1,23 +1,22 @@
 package com.eon.springbootdatamanagement.service;
 
-import com.eon.springbootdatamanagement.enums.StatusEnum;
-import com.eon.springbootdatamanagement.exception.EonException;
+import com.eon.springbootdatamanagement.exception.GlobalException;
 import com.eon.springbootdatamanagement.payload.request.CurrencyCreateUpdateRequest;
 import com.eon.springbootdatamanagement.payload.request.CurrencyDataRequest;
 import com.eon.springbootdatamanagement.payload.request.StatusUpdateRequest;
-import com.eon.springbootdatamanagement.payload.response.APIResponse;
+import com.eon.springbootdatamanagement.payload.response.GlobalResponse;
 
 public interface CurrencyService {
 
-    APIResponse createCurrency(CurrencyCreateUpdateRequest currencyCreateUpdateRequest) throws EonException;
+    GlobalResponse createCurrency(CurrencyCreateUpdateRequest currencyCreateUpdateRequest) throws GlobalException;
 
-    APIResponse updateCurrency(CurrencyCreateUpdateRequest currencyCreateUpdateRequest, Long id) throws EonException;
+    GlobalResponse updateCurrency(CurrencyCreateUpdateRequest currencyCreateUpdateRequest, Long id) throws GlobalException;
 
-    APIResponse updateCurrencyStatus(Long id, StatusUpdateRequest statusUpdateRequest) throws EonException;
+    GlobalResponse updateCurrencyStatus(Long id, StatusUpdateRequest statusUpdateRequest) throws GlobalException;
 
-    APIResponse getCurrencyById(Long id) throws EonException;
+    GlobalResponse getCurrencyById(Long id) throws GlobalException;
 
-    APIResponse getAllCurrencies() throws EonException;
+    GlobalResponse getAllCurrencies() throws GlobalException;
 
-    APIResponse getAllPaginatedCurrencies(CurrencyDataRequest currencyDataRequest) throws EonException;
+    GlobalResponse getAllPaginatedCurrencies(CurrencyDataRequest currencyDataRequest) throws GlobalException;
 }
