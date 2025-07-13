@@ -22,6 +22,7 @@ public class MessageBundle {
         return messageSource.getMessage(code, null, LocaleContextHolder.getLocale());
     }
 
+
     public static String getMessageByCode(String code) {
         return messageSource.getMessage(code, null, LocaleContextHolder.getLocale());
     }
