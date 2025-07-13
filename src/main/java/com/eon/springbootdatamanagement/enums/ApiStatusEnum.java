@@ -3,7 +3,7 @@ package com.eon.springbootdatamanagement.enums;
 import lombok.Getter;
 
 @Getter
-public enum ResponseStatusEnum {
+public enum ApiStatusEnum {
     SUCCESS,
     FAILED,
     PENDING

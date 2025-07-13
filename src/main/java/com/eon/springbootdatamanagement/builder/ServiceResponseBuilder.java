@@ -1,37 +1,51 @@
 package com.eon.springbootdatamanagement.builder;
 
 import com.eon.springbootdatamanagement.component.MessageBundle;
-import com.eon.springbootdatamanagement.enums.ResponseStatusEnum;
-import com.eon.springbootdatamanagement.payload.response.APIResponse;
-import org.springframework.http.HttpStatus;
+import com.eon.springbootdatamanagement.enums.ApiStatusEnum;
+import com.eon.springbootdatamanagement.exception.GlobalException;
+import com.eon.springbootdatamanagement.payload.response.GlobalResponse;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 public class ServiceResponseBuilder {
 
-    private ServiceResponseBuilder(){
+    private ServiceResponseBuilder() {
     }
 
-    public static APIResponse buildSuccessResponse(Object object){
-        APIResponse apiResponse = new APIResponse();
-        apiResponse.setResponseStatusEnum(ResponseStatusEnum.SUCCESS);
-        apiResponse.setData(object);
-        return apiResponse;
+    public static GlobalResponse buildSuccessResponse(String message) {
+        return GlobalResponse.builder()
+                .status(ApiStatusEnum.SUCCESS)
+                .data(message)
+                .build();
     }
 
-    public static APIResponse buildSuccessResponse(String code, Object object){
-        APIResponse apiResponse = new APIResponse();
-        apiResponse.setHttpStatus(HttpStatus.OK);
-        apiResponse.setResponseStatusEnum(ResponseStatusEnum.SUCCESS);
-        apiResponse.setData(object);
-        apiResponse.setMessage(MessageBundle.getMessage(code));
-        return apiResponse;
+    public static GlobalResponse buildSuccessResponse(String code, Object object) {
+        return GlobalResponse.builder()
+                .status(ApiStatusEnum.SUCCESS)
+                .message(MessageBundle.getMessage(code))
+                .data(object)
+                .build();
     }
 
-    public static APIResponse buildSuccessResponse(String code){
-        APIResponse apiResponse = new APIResponse();
-        apiResponse.setHttpStatus(HttpStatus.OK);
-        apiResponse.setResponseStatusEnum(ResponseStatusEnum.SUCCESS);
-        apiResponse.setMessage(MessageBundle.getMessage(code));
-        apiResponse.setCode(code);
-        return apiResponse;
+    public static GlobalResponse buildSuccessResponseWithMessage(String message, Object object) {
+        return GlobalResponse.builder()
+                .status(ApiStatusEnum.SUCCESS)
+                .message(message)
+                .data(object)
+                .build();
+    }
+
+    public static GlobalResponse buildFailResponse(GlobalException e) {
+        return GlobalResponse.builder()
+                .status(ApiStatusEnum.FAILED)
+                .message(e.getMessage())
+                .code(e.getCode())
+                .build();
+    }
+
+    public static GlobalResponse buildUnknownFailResponse(Exception e) {
+        return GlobalResponse.builder()
+                .status(ApiStatusEnum.FAILED)
+                .message(e.getMessage())
+                .build();
     }
 }

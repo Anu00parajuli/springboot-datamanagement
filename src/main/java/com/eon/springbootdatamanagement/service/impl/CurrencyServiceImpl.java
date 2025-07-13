@@ -3,11 +3,11 @@ package com.eon.springbootdatamanagement.service.impl;
 import com.eon.springbootdatamanagement.builder.ServiceResponseBuilder;
 import com.eon.springbootdatamanagement.entity.CurrencyEntity;
 import com.eon.springbootdatamanagement.enums.StatusEnum;
-import com.eon.springbootdatamanagement.exception.EonException;
+import com.eon.springbootdatamanagement.exception.GlobalException;
 import com.eon.springbootdatamanagement.payload.request.CurrencyCreateUpdateRequest;
 import com.eon.springbootdatamanagement.payload.request.CurrencyDataRequest;
 import com.eon.springbootdatamanagement.payload.request.StatusUpdateRequest;
-import com.eon.springbootdatamanagement.payload.response.APIResponse;
+import com.eon.springbootdatamanagement.payload.response.GlobalResponse;
 import com.eon.springbootdatamanagement.payload.response.CurrencyResponse;
 import com.eon.springbootdatamanagement.repository.CurrencyRepository;
 import com.eon.springbootdatamanagement.service.CurrencyService;
@@ -35,12 +35,12 @@ public class CurrencyServiceImpl implements CurrencyService {
     }
 
     @Override
-    public APIResponse createCurrency(CurrencyCreateUpdateRequest currencyCreateUpdateRequest) throws EonException {
+    public GlobalResponse createCurrency(CurrencyCreateUpdateRequest currencyCreateUpdateRequest) throws GlobalException {
         if (currencyRepository.existsCurrencyEntityByName(currencyCreateUpdateRequest.getName())) {
-            throw new EonException("CMS001", HttpStatus.CONFLICT);
+            throw new GlobalException("CMS001", HttpStatus.CONFLICT);
         }
         if (currencyCreateUpdateRequest.getName() == null) {
-            throw new EonException("CMS002", HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new GlobalException("CMS002", HttpStatus.UNPROCESSABLE_ENTITY);
         }
         CurrencyEntity currencyEntity = CurrencyEntity.builder()
                 .name(currencyCreateUpdateRequest.getName())
@@ -52,9 +52,9 @@ public class CurrencyServiceImpl implements CurrencyService {
     }
 
     @Override
-    public APIResponse updateCurrency(CurrencyCreateUpdateRequest currencyCreateUpdateRequest, Long id) throws EonException {
+    public GlobalResponse updateCurrency(CurrencyCreateUpdateRequest currencyCreateUpdateRequest, Long id) throws GlobalException {
         if (!currencyRepository.existsById(id)) {
-            throw new EonException("CMS002", HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new GlobalException("CMS002", HttpStatus.UNPROCESSABLE_ENTITY);
         }
         CurrencyEntity currency = currencyRepository.findById(id).get();
         if (currencyCreateUpdateRequest.getName() != null) {
@@ -70,14 +70,14 @@ public class CurrencyServiceImpl implements CurrencyService {
     }
 
     @Override
-    public APIResponse updateCurrencyStatus(Long id, StatusUpdateRequest statusUpdateRequest) throws EonException {
+    public GlobalResponse updateCurrencyStatus(Long id, StatusUpdateRequest statusUpdateRequest) throws GlobalException {
         if (!currencyRepository.existsById(id)) {
-            throw new EonException("CMS002", HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new GlobalException("CMS002", HttpStatus.UNPROCESSABLE_ENTITY);
         }
         CurrencyEntity currency = currencyRepository.findCurrencyEntityById(id);
 
         if (currency.getStatus() == StatusEnum.DELETED) {
-            throw new EonException("CMS004", HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new GlobalException("CMS004", HttpStatus.UNPROCESSABLE_ENTITY);
         }
         currency.setStatus(statusUpdateRequest.getStatus());
         currencyRepository.save(currency);
@@ -86,9 +86,9 @@ public class CurrencyServiceImpl implements CurrencyService {
     }
 
     @Override
-    public APIResponse getCurrencyById(Long id) throws EonException {
+    public GlobalResponse getCurrencyById(Long id) throws GlobalException {
         if (!currencyRepository.existsById(id)) {
-            throw new EonException("CMS002", HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new GlobalException("CMS002", HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
         CurrencyEntity currency = currencyRepository.findCurrencyEntityById(id);
@@ -98,14 +98,14 @@ public class CurrencyServiceImpl implements CurrencyService {
     }
 
     @Override
-    public APIResponse getAllCurrencies() throws EonException {
+    public GlobalResponse getAllCurrencies() throws GlobalException {
         List<CurrencyEntity> currencies = currencyRepository.findAll();
         List<CurrencyResponse> currencyResponseList = currencies.stream().map(currency -> createCurrencyResponse(currency)).toList();
         return ServiceResponseBuilder.buildSuccessResponse("All currencies listed: ", currencyResponseList);
     }
 
     @Override
-    public APIResponse getAllPaginatedCurrencies(CurrencyDataRequest currencyDataRequest) throws EonException {
+    public GlobalResponse getAllPaginatedCurrencies(CurrencyDataRequest currencyDataRequest) throws GlobalException {
         Specification<CurrencyEntity> specification = CurrencySpecification.filterCurrency(currencyDataRequest);
         Page<CurrencyEntity> currencyEntityPage = currencyRepository.findAll(specification, Helper.getPageable(currencyDataRequest));
         List<CurrencyEntity> currencyEntityList = currencyEntityPage.getContent();
