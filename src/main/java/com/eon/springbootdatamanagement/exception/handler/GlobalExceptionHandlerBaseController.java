@@ -6,7 +6,6 @@ import com.eon.springbootdatamanagement.enums.ApiStatusEnum;
 import com.eon.springbootdatamanagement.exception.GlobalException;
 import com.eon.springbootdatamanagement.payload.response.GlobalResponse;
 import com.google.gson.Gson;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

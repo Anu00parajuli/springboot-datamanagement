@@ -8,6 +8,7 @@ import com.eon.springbootdatamanagement.payload.request.CurrencyDataRequest;
 import com.eon.springbootdatamanagement.payload.request.StatusUpdateRequest;
 import com.eon.springbootdatamanagement.payload.response.GlobalResponse;
 import com.eon.springbootdatamanagement.service.CurrencyService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,7 +47,7 @@ public class CurrencyController {
     }
 
     @PostMapping("/find-paginated-data")
-    public ResponseEntity<GlobalResponse> findCurrencyPaginatedData(@RequestBody CurrencyDataRequest currencyDataRequest) throws GlobalException {
+    public ResponseEntity<GlobalResponse> findCurrencyPaginatedData(@RequestBody @Valid CurrencyDataRequest currencyDataRequest) throws GlobalException {
         return ResponseEntity.ok(currencyService.getAllPaginatedCurrencies(currencyDataRequest));
     }
 

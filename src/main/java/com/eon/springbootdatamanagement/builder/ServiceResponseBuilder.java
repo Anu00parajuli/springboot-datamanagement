@@ -4,7 +4,6 @@ import com.eon.springbootdatamanagement.component.MessageBundle;
 import com.eon.springbootdatamanagement.enums.ApiStatusEnum;
 import com.eon.springbootdatamanagement.exception.GlobalException;
 import com.eon.springbootdatamanagement.payload.response.GlobalResponse;
-import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 public class ServiceResponseBuilder {
 
@@ -45,6 +44,13 @@ public class ServiceResponseBuilder {
     public static GlobalResponse buildUnknownFailResponse(Exception e) {
         return GlobalResponse.builder()
                 .status(ApiStatusEnum.FAILED)
+                .message(e.getMessage())
+                .build();
+    }
+
+    public static GlobalResponse buildPendingResponse(GlobalException e) {
+        return GlobalResponse.builder()
+                .status(ApiStatusEnum.PENDING)
                 .message(e.getMessage())
                 .build();
     }

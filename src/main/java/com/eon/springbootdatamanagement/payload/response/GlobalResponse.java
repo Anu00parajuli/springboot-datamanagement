@@ -2,18 +2,14 @@ package com.eon.springbootdatamanagement.payload.response;
 
 import com.eon.springbootdatamanagement.enums.ApiStatusEnum;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+import lombok.*;
 import org.springframework.http.HttpStatus;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
+@Builder
 public class GlobalResponse {
     private ApiStatusEnum status;
     @JsonIgnore

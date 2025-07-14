@@ -11,6 +11,7 @@ import io.swagger.v3.oas.models.parameters.HeaderParameter;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -19,6 +20,7 @@ import java.util.List;
 @Configuration
 @SecurityScheme(name = "bearerAuth", description = "JWT Bearer token", scheme = "bearer",
         type = SecuritySchemeType.HTTP, bearerFormat = "JWT", in = SecuritySchemeIn.HEADER)
+@ConditionalOnClass(OpenAPI.class)
 public class SwaggerConfig {
 
     @Value("${server.url}")
@@ -31,8 +33,8 @@ public class SwaggerConfig {
         contact.setEmail("support@swifttech.com");
         contact.setUrl("https://swifttech.com");
 
-        return new OpenAPI().info(new Info().title(" API")
-                        .description("Bucket Service Project")
+        return new OpenAPI().info(new Info().title("Platform API")
+                        .description("DataManagement Project")
                         .contact(contact))
                 .addSecurityItem(new io.swagger.v3.oas.models.security.SecurityRequirement().addList("bearerAuth")) // Add security globally
                 .servers(List.of(new Server().url(serverURL)));

@@ -7,6 +7,7 @@ import com.eon.springbootdatamanagement.exception.GlobalException;
 import com.eon.springbootdatamanagement.payload.request.CurrencyCreateUpdateRequest;
 import com.eon.springbootdatamanagement.payload.request.CurrencyDataRequest;
 import com.eon.springbootdatamanagement.payload.request.StatusUpdateRequest;
+import com.eon.springbootdatamanagement.payload.response.DataPaginationResponse;
 import com.eon.springbootdatamanagement.payload.response.GlobalResponse;
 import com.eon.springbootdatamanagement.payload.response.CurrencyResponse;
 import com.eon.springbootdatamanagement.repository.CurrencyRepository;
@@ -110,7 +111,11 @@ public class CurrencyServiceImpl implements CurrencyService {
         Page<CurrencyEntity> currencyEntityPage = currencyRepository.findAll(specification, Helper.getPageable(currencyDataRequest));
         List<CurrencyEntity> currencyEntityList = currencyEntityPage.getContent();
         List<CurrencyResponse> currencyResponseList = currencyEntityList.stream().map(this::createCurrencyResponse).toList();
-        return ServiceResponseBuilder.buildSuccessResponse("All currency listed: ", currencyResponseList);
+        DataPaginationResponse dataPaginationResponse = DataPaginationResponse.builder()
+                .result(currencyResponseList)
+                .totalElementCount(currencyEntityPage.getTotalElements())
+                .build();
+        return ServiceResponseBuilder.buildSuccessResponse("All currency listed: ", dataPaginationResponse);
     }
 
     private CurrencyResponse createCurrencyResponse(CurrencyEntity currencyEntity) {
