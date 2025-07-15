@@ -20,7 +20,7 @@ import java.util.List;
 @Configuration
 @SecurityScheme(name = "bearerAuth", description = "JWT Bearer token", scheme = "bearer",
         type = SecuritySchemeType.HTTP, bearerFormat = "JWT", in = SecuritySchemeIn.HEADER)
-@ConditionalOnClass(OpenAPI.class)
+//@ConditionalOnClass(OpenAPI.class)
 public class SwaggerConfig {
 
     @Value("${server.url}")

@@ -5,15 +5,20 @@ import com.eon.springbootdatamanagement.component.MessageBundle;
 import com.eon.springbootdatamanagement.enums.ApiStatusEnum;
 import com.eon.springbootdatamanagement.exception.GlobalException;
 import com.eon.springbootdatamanagement.payload.response.GlobalResponse;
+import com.eon.springbootdatamanagement.util.EnumUtil;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.method.ParameterErrors;
@@ -22,10 +27,12 @@ import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -113,5 +120,42 @@ public class GlobalExceptionHandlerBaseController {
         globalResponse.setMessage(MessageBundle.getMessageByCode("HED001"));
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
                 .body(globalResponse);
+    }
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<GlobalResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+        Throwable cause = ex.getCause();
+        GlobalResponse apiResponse = GlobalResponse.builder()
+                .status(ApiStatusEnum.FAILED)
+                .build();
+        String message = "Message not Readable.";
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+        if (cause instanceof InvalidFormatException ife) {
+            Class<?> targetType = ife.getTargetType();
+            if (targetType.isEnum()) {
+                String validValues = EnumUtil.getEnumConstants(targetType.asSubclass(Enum.class));
+                message = "Invalid Enum. Accepted Enum values are: " + validValues;
+                httpStatus = HttpStatus.UNPROCESSABLE_ENTITY;
+            } else {
+                if (UUID.class.equals(targetType)) {
+                    message = "Invalid UUId, " + ife.getValue();
+                }
+            }
+        } else if (cause instanceof UnrecognizedPropertyException unpe) {
+            message = "Invalid property, " + unpe.getPropertyName();
+        }
+
+        apiResponse.setMessage(message);
+        return ResponseEntity.status(httpStatus)
+                .body(apiResponse);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<GlobalResponse> handleMethodArgumentTypeMismatchException(final MethodArgumentTypeMismatchException e) {
+        GlobalResponse apiResponse = GlobalResponse.builder()
+                .status(ApiStatusEnum.FAILED)
+                .message("asda")
+                .build();
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+                .body(apiResponse);
     }
 }

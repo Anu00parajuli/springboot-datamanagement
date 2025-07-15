@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+    <springProperty scope="context" name="applicationName" source="spring.application.name"/>
+    <appender name="FLUENTD" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>${LOGSTASH_HOST:-192.168.1.114}:${LOGSTASH_PORT:-24224}</destination>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <provider class="net.logstash.logback.composite.GlobalCustomFieldsJsonProvider">
+                    <customFields>{"application-name":"${applicationName}"}</customFields>
+                </provider>
+                <provider class="net.logstash.logback.composite.loggingevent.LogLevelJsonProvider"/>
+                <provider class="net.logstash.logback.composite.loggingevent.LoggerNameJsonProvider"/>
+                <provider class="net.logstash.logback.composite.loggingevent.ThreadNameJsonProvider"/>
+                <provider class="net.logstash.logback.composite.loggingevent.MessageJsonProvider"/>
+                <provider class="net.logstash.logback.composite.loggingevent.MdcJsonProvider"/>
+                <provider class="net.logstash.logback.composite.loggingevent.StackTraceJsonProvider"/>
+
+                <!-- Add MDC for contextual data -->
+                <mdc>
+                    <includeMdcKeyName>userId</includeMdcKeyName>
+                    <includeMdcKeyName>ipAddress</includeMdcKeyName>
+                    <includeMdcKeyName>requestId</includeMdcKeyName>
+                </mdc>
+
+                <context/>
+                <logLevel/>
+                <loggerName/>
+                <threadName/>
+                <message/>
+                <logstashMarkers/>
+                <stackTrace/>
+            </providers>
+        </encoder>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="FLUENTD"/>
+    </root>
+</configuration>
