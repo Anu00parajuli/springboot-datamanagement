@@ -21,7 +21,7 @@ public class CurrencyController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<GlobalResponse> createCurrency(@RequestBody CurrencyCreateUpdateRequest currencyCreateUpdateRequest) throws GlobalException {
+    public ResponseEntity<GlobalResponse> createCurrency(@RequestBody  @Valid CurrencyCreateUpdateRequest currencyCreateUpdateRequest) throws GlobalException {
         return ResponseEntity.ok(currencyService.createCurrency(currencyCreateUpdateRequest));
     }
 
